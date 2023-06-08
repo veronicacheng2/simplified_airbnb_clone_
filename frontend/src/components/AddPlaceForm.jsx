@@ -1,9 +1,9 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { json, useNavigate, useParams } from "react-router-dom";
 import PhotosUploader from "./PhotosUploader";
 
-const AddPlaceForm = ({ edit = false, id = "" }) => {
+const AddPlaceForm = () => {
   const [input, setInput] = useState({
     title: "",
     address: "",
@@ -17,12 +17,17 @@ const AddPlaceForm = ({ edit = false, id = "" }) => {
     addedPhotos: [],
   });
   const navigate = useNavigate();
+  const { placeId } = useParams();
 
-  if (edit) {
-    axios
-      .get(`/places/${id}`)
-      .then(({ data }) => setInput({ ...data, addedPhotos: data.photos }));
-  }
+  useEffect(() => {
+    if (placeId) {
+      axios
+        .get(`/places/${placeId}`)
+        .then(({ data }) =>
+          setInput({ ...data, addedPhotos: data.photos, photoLink: "" })
+        );
+    }
+  }, [placeId]);
 
   const handleInput = (key) => (e) => {
     setInput((state) => ({ ...state, [key]: e.target.value }));
@@ -31,11 +36,7 @@ const AddPlaceForm = ({ edit = false, id = "" }) => {
   const handleCheckbox = (e) => {
     const { checked, name } = e.target;
     if (checked) {
-      setInput((state) => {
-        state.perks.push(name);
-
-        return state;
-      });
+      setInput((state) => ({ ...state, perks: [...state.perks, name] }));
     } else {
       setInput((state) => {
         const perks = state.perks.filter((perk) => perk.trim() !== name.trim());
@@ -44,15 +45,21 @@ const AddPlaceForm = ({ edit = false, id = "" }) => {
     }
   };
 
-  const addNewPlace = async (e) => {
+  const savePlace = async (e) => {
     e.preventDefault();
-    await axios.post("/places", input);
+
+    if (placeId) {
+      await axios.put(`/places/${placeId}`, input);
+    } else {
+      await axios.post("/places", input);
+    }
     navigate("/account/places");
+    // navigate("/");
   };
 
   return (
     <div>
-      <form onSubmit={addNewPlace}>
+      <form onSubmit={savePlace}>
         <h2 className="text-2xl mt-4">Title</h2>
         <input
           type="text"
@@ -87,7 +94,7 @@ const AddPlaceForm = ({ edit = false, id = "" }) => {
               type="checkbox"
               name="wifi"
               onChange={handleCheckbox}
-              value={input.perks.includes("wifi")}
+              checked={input.perks.includes("wifi")}
             />
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -111,7 +118,7 @@ const AddPlaceForm = ({ edit = false, id = "" }) => {
               type="checkbox"
               name="parking"
               onChange={handleCheckbox}
-              value={input.perks.includes("parking")}
+              checked={input.perks.includes("parking")}
             />
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -135,7 +142,7 @@ const AddPlaceForm = ({ edit = false, id = "" }) => {
               type="checkbox"
               name="tv"
               onChange={handleCheckbox}
-              value={input.perks.includes("tv")}
+              checked={input.perks.includes("tv")}
             />
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -159,7 +166,7 @@ const AddPlaceForm = ({ edit = false, id = "" }) => {
               type="checkbox"
               name="pets"
               onChange={handleCheckbox}
-              value={input.perks.includes("pets")}
+              checked={input.perks.includes("pets")}
             />
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -183,7 +190,7 @@ const AddPlaceForm = ({ edit = false, id = "" }) => {
               type="checkbox"
               name="entrance"
               onChange={handleCheckbox}
-              value={input.perks.includes("entrance")}
+              checked={input.perks.includes("entrance")}
             />
             <svg
               xmlns="http://www.w3.org/2000/svg"

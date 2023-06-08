@@ -158,9 +158,50 @@ app.get("/places", (req, res) => {
   });
 });
 
-app.get("/places/:id", async (req, res) => {
-  const { id } = req.params;
-  res.json(await Place.findById(id));
-});
+app
+  .route("/places/:id")
+  .get(async (req, res) => {
+    const { id } = req.params;
+    res.json(await Place.findById(id));
+  })
+  .put((req, res) => {
+    const { token } = req.cookies;
+    const { id } = req.params;
+    const {
+      title,
+      address,
+      addedPhotos: photos,
+      description,
+      perks,
+      extraInfo,
+      checkIn,
+      checkOut,
+      maxGuests,
+    } = req.body;
+
+    jwt.verify(token, process.env.JWT_SECRET, {}, async (err, userData) => {
+      try {
+        const placeDoc = await Place.findById(id);
+
+        if (userData.id === placeDoc.owner.toString()) {
+          placeDoc.set({
+            title,
+            address,
+            photos,
+            description,
+            perks,
+            extraInfo,
+            checkIn,
+            checkOut,
+            maxGuests,
+          });
+          await placeDoc.save();
+          return res.json("successfully updated");
+        }
+      } catch (err) {
+        return res.status(400).json("Fail to update");
+      }
+    });
+  });
 
 app.listen(4000);
