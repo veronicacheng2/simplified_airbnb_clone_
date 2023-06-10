@@ -14,6 +14,7 @@ import BookingsPage from "./pages/BookingsPage";
 import ProfilePage from "./pages/ProfilePage";
 import AddPlaceForm from "./components/AddPlaceForm";
 import AddedPlaces from "./components/AddedPlaces";
+import PlaceDetailPage from "./pages/PlaceDetailPage";
 
 axios.defaults.baseURL = "http://127.0.0.1:4000";
 axios.defaults.withCredentials = true;
@@ -24,20 +25,26 @@ function App() {
       <Layout>
         <Header />
       </Layout>
-      <Routes>
-        <Route index path="/" element={<IndexPage />} />
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/register" element={<RegisterPage />} />
-        <Route path="/account" element={<AccountPage />}>
-          <Route index path="/account/" element={<ProfilePage />} />
-          <Route path="/account/bookings" element={<BookingsPage />} />
-          <Route path="/account/places" element={<PlacesPage />}>
-            <Route path="/account/places/" element={<AddedPlaces />} />
-            <Route path="/account/places/new" element={<AddPlaceForm />} />
-            <Route path="/account/places/:placeId" element={<AddPlaceForm />} />
+      <Layout>
+        <Routes>
+          <Route index path="/" element={<IndexPage />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/register" element={<RegisterPage />} />
+          <Route path="/account" element={<AccountPage />}>
+            <Route index path="/account/" element={<ProfilePage />} />
+            <Route path="/account/bookings" element={<BookingsPage />} />
+            <Route path="/account/places" element={<PlacesPage />}>
+              <Route path="/account/places/" element={<AddedPlaces />} />
+              <Route path="/account/places/new" element={<AddPlaceForm />} />
+              <Route
+                path="/account/places/:placeId"
+                element={<AddPlaceForm />}
+              />
+            </Route>
           </Route>
-        </Route>
-      </Routes>
+          <Route path="/place/:id" element={<PlaceDetailPage />} />
+        </Routes>
+      </Layout>
     </UserContextProvider>
   );
 }

@@ -10,6 +10,7 @@ const AddPlaceForm = () => {
     photoLink: "",
     description: "",
     perks: [],
+    price: 100,
     extraInfo: "",
     checkIn: "",
     checkOut: "",
@@ -54,7 +55,6 @@ const AddPlaceForm = () => {
       await axios.post("/places", input);
     }
     navigate("/account/places");
-    // navigate("/");
   };
 
   return (
@@ -220,7 +220,7 @@ const AddPlaceForm = () => {
         <h2 className="text-2xl mt-4">
           Check-in and checkout time, max guests number
         </h2>
-        <div className="grid gap-2 sm:grid-cols-3">
+        <div className="grid gap-2 grid-cols-2 sm:grid-cols-2 md:grid-cols-4">
           <div>
             <h3 className="mt-2 -mb-1">Check-in time</h3>
             <input
@@ -243,6 +243,14 @@ const AddPlaceForm = () => {
               type="number"
               value={input.maxGuests}
               onChange={handleInput("maxGuests")}
+            />
+          </div>
+          <div>
+            <h3 className="mt-2 -mb-1">Price per night</h3>
+            <input
+              type="number"
+              value={input.price}
+              onChange={handleInput("price")}
             />
           </div>
         </div>

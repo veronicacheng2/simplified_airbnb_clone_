@@ -14,6 +14,7 @@ const app = express();
 
 const bcryptSalt = bcrypt.genSaltSync(10);
 
+// middleware
 app.use(
   cors({
     credentials: true,
@@ -26,6 +27,7 @@ app.use(cookieParser());
 
 mongoose.connect(process.env.MONGO_URL);
 
+// API Endpoints
 app.post("/register", async (req, res) => {
   try {
     const { name, email, password } = req.body;
@@ -55,7 +57,6 @@ app.post("/login", async (req, res) => {
           return res.cookie("token", token).json(userDoc);
         }
       );
-      // JwT, cookie with encrypted user name
     } else {
       return res.status(422).json("pass not ok");
     }
@@ -64,6 +65,7 @@ app.post("/login", async (req, res) => {
   }
 });
 
+// user information
 app.get("/profile", (req, res) => {
   const { token } = req.cookies;
   if (token) {
@@ -81,6 +83,7 @@ app.post("/logout", (req, res) => {
   res.cookie("token", "").json(true);
 });
 
+// download photos by link (in the server)
 app.post("/image-links", async (req, res) => {
   try {
     const { link } = req.body;
@@ -97,6 +100,7 @@ app.post("/image-links", async (req, res) => {
   }
 });
 
+// saving photos to server (receiving image files from client)
 const photosMiddleware = multer({ dest: "uploads/" });
 app.post("/upload", photosMiddleware.array("photos", 30), (req, res) => {
   const uploadedFiles = [];
@@ -111,43 +115,50 @@ app.post("/upload", photosMiddleware.array("photos", 30), (req, res) => {
   res.json(uploadedFiles);
 });
 
-app.post("/places", async (req, res) => {
-  // get user id from cookie
-  const { token } = req.cookies;
-  const {
-    title,
-    address,
-    addedPhotos,
-    description,
-    perks,
-    extraInfo,
-    checkIn,
-    checkOut,
-    maxGuests,
-  } = req.body;
-  if (token) {
-    jwt.verify(token, process.env.JWT_SECRET, {}, async (err, userData) => {
-      if (err) throw err;
-      const placeDoc = await Place.create({
-        owner: userData.id,
-        title,
-        address,
-        photos: addedPhotos,
-        description,
-        perks,
-        extraInfo,
-        checkIn,
-        checkOut,
-        maxGuests,
+app
+  .route("/places")
+  .get(async (req, res) => {
+    res.json(await Place.find());
+  })
+  .post(async (req, res) => {
+    const { token } = req.cookies;
+    const {
+      title,
+      address,
+      addedPhotos,
+      description,
+      perks,
+      extraInfo,
+      checkIn,
+      checkOut,
+      maxGuests,
+      price,
+    } = req.body;
+    if (token) {
+      jwt.verify(token, process.env.JWT_SECRET, {}, async (err, userData) => {
+        if (err) throw err;
+        const placeDoc = await Place.create({
+          owner: userData.id,
+          title,
+          address,
+          photos: addedPhotos,
+          description,
+          perks,
+          extraInfo,
+          checkIn,
+          checkOut,
+          maxGuests,
+          price,
+        });
+        res.json(placeDoc);
       });
-      res.json(placeDoc);
-    });
-  } else {
-    res.json(null);
-  }
-});
+    } else {
+      res.json(null);
+    }
+  });
 
-app.get("/places", (req, res) => {
+// get places owned by user
+app.get("/user-places", (req, res) => {
   const { token } = req.cookies;
   jwt.verify(token, process.env.JWT_SECRET, {}, async (err, userData) => {
     const { id } = userData;
@@ -177,6 +188,7 @@ app
       checkIn,
       checkOut,
       maxGuests,
+      price,
     } = req.body;
 
     jwt.verify(token, process.env.JWT_SECRET, {}, async (err, userData) => {
@@ -194,6 +206,7 @@ app
             checkIn,
             checkOut,
             maxGuests,
+            price,
           });
           await placeDoc.save();
           return res.json("successfully updated");
