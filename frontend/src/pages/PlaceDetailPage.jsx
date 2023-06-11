@@ -1,6 +1,10 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import BookingWidget from "../components/BookingWidget";
+
+import PlaceGallery from "../components/PlaceGallery";
+import PlaceSpecification from "../components/PlaceSpecification";
 
 const PlaceDetailPage = () => {
   const { id } = useParams();
@@ -13,51 +17,57 @@ const PlaceDetailPage = () => {
   }, []);
 
   if (showAll) {
-    return <div>Show Photos</div>;
+    window.scrollTo(0, 0);
+    return (
+      <div className="absolute bg-white inset-0 p-8">
+        <div className="mb-12">
+          <button
+            className="fixed flex gap-1 py-2 px-4 rounded-2xl shadow"
+            onClick={() => {
+              setShowAll(false);
+              window.scrollTo(0, 0);
+            }}
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={1.5}
+              stroke="currentColor"
+              className="w-6 h-6"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M6 18L18 6M6 6l12 12"
+              />
+            </svg>
+            Close photos
+          </button>
+        </div>
+        <div className="w-8/12 mx-auto grid grid-cols-2 gap-1">
+          {place.photos?.length > 0 &&
+            place.photos.map((photo, i) => (
+              <div key={photo} className={i === 0 ? "col-span-2" : "max-h-96"}>
+                <img
+                  src={`${axios.defaults.baseURL}/uploads/${photo}`}
+                  className="w-full h-full"
+                />
+              </div>
+            ))}
+        </div>
+      </div>
+    );
   }
 
   return (
-    <div className="mt-4 -mx-8 px-8 py-6 bg-gray-100">
-      <h1 className="text-3xl">{place?.title}</h1>
-      <a
-        href={`https://maps.google.com/?q=${place.address}`}
-        target="_blank"
-        className="my-2 block font-semibold underline"
-      >
-        {place.address}
-      </a>
-      <div className="relative">
-        <div className="grid gap-2 grid-cols-[2fr_1fr]">
-          <div className="">
-            {place.photos?.[0] && (
-              <div>
-                <img
-                  src={`${axios.defaults.baseURL}/uploads/${place.photos[0]}`}
-                  className="aspect-square object-cover"
-                />
-              </div>
-            )}
-          </div>
-          <div className="grid">
-            {place.photos?.[1] && (
-              <img
-                src={`${axios.defaults.baseURL}/uploads/${place.photos[1]}`}
-                className="aspect-square object-cover"
-              />
-            )}
-            {place.photos?.[2] && (
-              <div className="overflow-hidden">
-                <img
-                  src={`${axios.defaults.baseURL}/uploads/${place.photos[2]}`}
-                  className="aspect-square object-cover relative top-2"
-                />
-              </div>
-            )}
-          </div>
-        </div>
-        <button
-          className="flex gap-1 absolute bottom-2 right-2 py-2 px-4 bg-white rounded-2xl shadow-gray-500"
-          onClick={() => setShowAll(true)}
+    <div className="mt-4 -mx-8 px-48 py-6 bg-gray-100">
+      <div>
+        <h1 className="text-3xl">{place?.title}</h1>
+        <a
+          href={`https://maps.google.com/?q=${place.address}`}
+          target="_blank"
+          className="flex gap-1 my-3 block font-semibold underline"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -70,11 +80,28 @@ const PlaceDetailPage = () => {
             <path
               strokeLinecap="round"
               strokeLinejoin="round"
-              d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"
+              d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z"
+            />
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z"
             />
           </svg>
-          Show more photos
-        </button>
+
+          {place.address}
+        </a>
+      </div>
+      <PlaceGallery place={place} setShowAll={setShowAll} />
+      <div className="grid grid-cols-2 gap-5">
+        <PlaceSpecification place={place} />
+        <div className="my-4">
+          <BookingWidget place={place} />
+        </div>
+      </div>
+      <div>
+        <h2 className="text-2xl">What this place offers</h2>
+        <p className="leading-8 text-gray-800 text-sm">{place.extraInfo}</p>
       </div>
     </div>
   );
