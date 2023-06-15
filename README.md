@@ -1,4 +1,4 @@
-# Simplified Airbnb Clone
+# Simplified Airbnb Clone (MERN Stack)
 Frontend:Reactjs <br>
 Backend:Nodejs,Expressjs <br>
 Database:MongoDB <br>
