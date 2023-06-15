@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { Route, Routes } from "react-router-dom";
 import "./App.css";
 import Layout from "./styles/Layout";
@@ -33,6 +32,7 @@ function App() {
           <Route path="/account" element={<AccountPage />}>
             <Route index path="/account/" element={<ProfilePage />} />
             <Route path="/account/bookings" element={<BookingsPage />} />
+
             <Route path="/account/places" element={<PlacesPage />}>
               <Route path="/account/places/" element={<AddedPlaces />} />
               <Route path="/account/places/new" element={<AddPlaceForm />} />

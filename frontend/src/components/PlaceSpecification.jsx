@@ -13,6 +13,11 @@ const PlaceSpecification = ({ place }) => {
         Checkout: {place.checkOut} <br />
         {place.maxGuests} guests maximum
       </div>
+
+      <div className="my-8">
+        <h2 className="text-2xl">What this place offers</h2>
+        <p className="leading-8 text-gray-800 text-sm">{place.extraInfo}</p>
+      </div>
     </div>
   );
 };

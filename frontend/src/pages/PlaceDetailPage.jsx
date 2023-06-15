@@ -99,10 +99,6 @@ const PlaceDetailPage = () => {
           <BookingWidget place={place} />
         </div>
       </div>
-      <div>
-        <h2 className="text-2xl">What this place offers</h2>
-        <p className="leading-8 text-gray-800 text-sm">{place.extraInfo}</p>
-      </div>
     </div>
   );
 };

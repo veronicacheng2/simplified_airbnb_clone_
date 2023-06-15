@@ -1,11 +1,7 @@
 import { Outlet } from "react-router-dom";
 
 const PlacesPage = () => {
-  return (
-    <div>
-      <Outlet />
-    </div>
-  );
+  return <Outlet />;
 };
 
 export default PlacesPage;

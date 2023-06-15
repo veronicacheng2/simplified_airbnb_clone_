@@ -10,6 +10,7 @@ const multer = require("multer");
 const fs = require("fs");
 const User = require("./models/User");
 const Place = require("./models/Place");
+const Booking = require("./models/Booking");
 const app = express();
 
 const bcryptSalt = bcrypt.genSaltSync(10);
@@ -36,6 +37,7 @@ app.post("/register", async (req, res) => {
       email,
       password: bcrypt.hashSync(password),
     });
+
     return res.json(userDoc);
   } catch (err) {
     res.status(422).json(err);
@@ -61,12 +63,12 @@ app.post("/login", async (req, res) => {
       return res.status(422).json("pass not ok");
     }
   } else {
-    res.json("not found");
+    res.json(false);
   }
 });
 
 // user information
-app.get("/profile", (req, res) => {
+app.get("/profile", async (req, res) => {
   const { token } = req.cookies;
   if (token) {
     jwt.verify(token, process.env.JWT_SECRET, {}, async (err, userData) => {
@@ -160,13 +162,15 @@ app
 // get places owned by user
 app.get("/user-places", (req, res) => {
   const { token } = req.cookies;
-  jwt.verify(token, process.env.JWT_SECRET, {}, async (err, userData) => {
-    const { id } = userData;
+  if (token) {
+    jwt.verify(token, process.env.JWT_SECRET, {}, async (err, userData) => {
+      const { id } = userData;
 
-    const allPlaces = await Place.find({ owner: id });
+      const allPlaces = await Place.find({ owner: id });
 
-    res.json(allPlaces);
-  });
+      res.json(allPlaces);
+    });
+  }
 });
 
 app
@@ -216,5 +220,56 @@ app
       }
     });
   });
+
+app
+  .route("/bookings")
+  .get((req, res) => {
+    const { token } = req.cookies;
+    jwt.verify(token, process.env.JWT_SECRET, {}, async (err, userData) => {
+      if (err) throw err;
+
+      const bookings = await Booking.find({ user: userData.id }).populate(
+        "place"
+      );
+      return res.json(bookings);
+    });
+  })
+  .post(async (req, res) => {
+    const { token } = req.cookies;
+    const { place, checkIn, checkOut, guestNum, name, phone, totalPrice } =
+      req.body;
+
+    if (token) {
+      jwt.verify(token, process.env.JWT_SECRET, {}, async (err, userData) => {
+        if (err) throw err;
+
+        const booking = await Booking.create({
+          user: userData.id,
+          place,
+          checkIn,
+          checkOut,
+          guestNum,
+          name,
+          phone,
+          totalPrice,
+        });
+        return res.json(booking);
+      });
+    } else {
+      return res.status(400).json("Unauthorized");
+    }
+  });
+
+app.get("/bookings", (req, res) => {
+  const { token } = req.cookies;
+  if (token) {
+    jwt.verify(token, process.env.JWT_SECRET, {}, async (err, userData) => {
+      if (err) throw err;
+      res.json(Booking.find({ user: userData.id }));
+    });
+  } else {
+    return res.status(400).json("Unauthorized");
+  }
+});
 
 app.listen(4000);

@@ -13,9 +13,14 @@ const LoginPage = () => {
     e.preventDefault();
     try {
       const { data } = await axios.post("/login", { email, password });
-      setUser(data);
-      alert("Login successful");
-      navigate("/");
+      if (data) {
+        setUser(data);
+        alert("Login successful");
+        navigate("/");
+      } else {
+        alert("Not a valid user, please register");
+        navigate("/register");
+      }
     } catch (e) {
       console.log(e);
       alert("Login failed");
