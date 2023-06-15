@@ -1,7 +1,7 @@
 # Simplified Airbnb Clone
-Frontend:Reactjs
-Backend:Nodejs,Expressjs 
-Database:MongoDB
+Frontend:Reactjs <br>
+Backend:Nodejs,Expressjs <br>
+Database:MongoDB <br>
 
 ## Features
 1. User Registration
