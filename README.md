@@ -12,7 +12,7 @@ Database:MongoDB <br>
 
 
 #### Screenshot
-<img src="https://github.com/veronicacheng2/simplified_airbnb_clone_/blob/main/Home%20page%20demo.png">
+<img src="https://github.com/veronicacheng2/simplified_airbnb_clone_/blob/main/Demo1_homepage.PNG">
 <img src="https://github.com/veronicacheng2/simplified_airbnb_clone_/blob/main/Demo2_listingdetails.PNG">
 <img src="https://github.com/veronicacheng2/simplified_airbnb_clone_/blob/main/Demo2_listingdetails(2).PNG">
 <img src="https://github.com/veronicacheng2/simplified_airbnb_clone_/blob/main/Demo3_MyBookings.PNG">
