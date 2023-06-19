@@ -5,10 +5,10 @@ Database:MongoDB <br>
 
 ## Features
 1. User Registration
-2. Authentication (JWT)
-3. Uploading Image
-4. Create Booking
-5. Listing Your Place
+2. Authentication (JWT) 
+4. Uploading Image
+5. Create Booking
+6. Listing Your Place
 
 
 #### Screenshot
