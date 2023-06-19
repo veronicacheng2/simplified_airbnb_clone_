@@ -13,10 +13,15 @@ Database:MongoDB <br>
 
 #### Screenshot
 <img src="https://github.com/veronicacheng2/simplified_airbnb_clone_/blob/main/Demo1_homepage.PNG">
+<br />
 <img src="https://github.com/veronicacheng2/simplified_airbnb_clone_/blob/main/Demo2_listingdetails.PNG">
+<br />
 <img src="https://github.com/veronicacheng2/simplified_airbnb_clone_/blob/main/Demo2_listingdetails(2).PNG">
+<br />
 <img src="https://github.com/veronicacheng2/simplified_airbnb_clone_/blob/main/Demo3_MyBookings.PNG">
+<br />
 <img src="https://github.com/veronicacheng2/simplified_airbnb_clone_/blob/main/Demo4_MyAccomdations.PNG">
+<br />
 <img src="https://github.com/veronicacheng2/simplified_airbnb_clone_/blob/main/Demo5_Form.PNG">
 
 
